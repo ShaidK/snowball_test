@@ -1,5 +1,5 @@
 #
-# File: pyproject.toml | Note: Following file maintains the Python Build Configurations 
+# File: .gitignore | Note: Following file ignore specific files & directories from being committed
 #
 
 #
@@ -26,34 +26,36 @@
 # SOFTWARE.
 #
 
-[project]
-name = "snowball"
-description = "Following Project is integrate a GitHub Actions which validates the Semantic Version"
-version = "0.4.0"
-authors = [
-    { name = "ShaidK", email = "ShaidK@duck.com" }
-]
-readme = "README.md"
-license = "MIT"
-requires-python = ">=3.10"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    #"Topic :: CI/CD"
-]
+__pycache__/
+*$py.class
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+dist/
 
-[tool.poetry]
-packages = [
-    {include = "snowball", from = "src"}
-]
+.venv/
+venv/
 
-[tool.poetry.group.test.dependencies]
-pytest = "^9.0.2"
+htmlcov/
+*tox/
+*nox/
+*.cover
+*.py.cover
+.coverage
+.coverage.*
+.cache
+coverage.xml
 
-[tool.poetry.dependencies]
-semver = "^3.0.4"
+*.log
+*.tmp
+*.bak
+*.tar
+*.pid
+*.img
+*.db
+*.sqlite
 
-[build-system]
-requires = [ "poetry-core>=2.0.0,<3.0.0" ]
-build-backend = "poetry.core.masonry.api"
+docker-compose.override.yml
+
+.vscode/

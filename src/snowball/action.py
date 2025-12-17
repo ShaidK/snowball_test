@@ -1,5 +1,5 @@
 #
-# File: pyproject.toml | Note: Following file maintains the Python Build Configurations 
+# File: action.py | Note: Following file maintains validation of the Semantic Version 
 #
 
 #
@@ -26,34 +26,28 @@
 # SOFTWARE.
 #
 
-[project]
-name = "snowball"
-description = "Following Project is integrate a GitHub Actions which validates the Semantic Version"
-version = "0.4.0"
-authors = [
-    { name = "ShaidK", email = "ShaidK@duck.com" }
-]
-readme = "README.md"
-license = "MIT"
-requires-python = ">=3.10"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    #"Topic :: CI/CD"
-]
+from semver import Version
 
-[tool.poetry]
-packages = [
-    {include = "snowball", from = "src"}
-]
+class SemanticVersionValidation:
+    """
+    The following class is responsible for validating the semantic version string.
+    This ensure that the input conforms to Semantic Versioning specification
+    """
 
-[tool.poetry.group.test.dependencies]
-pytest = "^9.0.2"
+    @staticmethod
+    def validate(version: str) -> bool:
+        """
+        The following static function validates if the provided string conform to 
+        Semantic Versioning specification
+        
+        :param version: Parameter sematic version string to be validated
+        :type version: str
 
-[tool.poetry.dependencies]
-semver = "^3.0.4"
-
-[build-system]
-requires = [ "poetry-core>=2.0.0,<3.0.0" ]
-build-backend = "poetry.core.masonry.api"
+        :return: True if the string is valid semantic version else False
+        :rtype: bool
+        """
+        if not isinstance(version, str):
+            raise ValueError(
+                f"Invalid type for parameter 'version': expected str, got {type(version).__name__}"
+            )
+        return Version.is_valid(version=version.lstrip("Vv"))
