@@ -29,12 +29,15 @@
 
 name: Build Snowball Project
 on:
-    pull_request:
-        types: [ opened, synchronize ]
+  pull_request:
+    types: [ opened, synchronize ]
+  push:
+    branches:
+      - "build"
 
 jobs:
   build_project:
-    name: Build Project
+    name: Build Snowball Project
     
     runs-on: ubuntu-latest
     strategy:
@@ -64,10 +67,13 @@ jobs:
     - name: Install Poetry Dependencies 
       run: |
         poetry config virtualenvs.in-project true
+        poetry config virtualenvs.create true
         poetry install --no-root --no-interaction
 
     - name: Test Snowball Project
-      run: poetry run pytest -v
+      run: |
+        source $(poetry env info --path)/bin/activate
+        poetry run pytest -v
 
     - name: Build Snowball Project 
       run: poetry build --no-interaction
