@@ -29,16 +29,15 @@
 
 name: Build Snowball Project
 on:
-  workflow_dispatch:
-  pull_request:
-    types: [ opened, synchronize ]
-  push:
-    branches:
-      - build
+    pull_request:
+        types: [ opened, synchronize ]
+    push:
+        branches:
+        - build
 
 jobs:
   build_project:
-    name: Build Snowball Project
+    name: Build Project
     
     runs-on: ubuntu-latest
     strategy:
@@ -79,7 +78,7 @@ jobs:
     - name: Execute Snowball Project Coverage
       run: |
         source $(poetry env info --path)/bin/activate
-        poetry run pytest --cov=snowball --cov-branch --cov-report=term-missing
+        poetry run pytest --cov=snowball --cov-branch
 
     - name: Build Snowball Project 
       run: poetry build --no-interaction
