@@ -29,11 +29,12 @@
 
 name: Build Snowball Project
 on:
+  workflow_dispatch:
   pull_request:
     types: [ opened, synchronize ]
   push:
     branches:
-      - "build"
+      - build
 
 jobs:
   build_project:
@@ -41,12 +42,18 @@ jobs:
     
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: [ "3.10", "3.11", "3.12" ]
 
     steps:
     - name: Checkout Snowball Project Repository
       uses: actions/checkout@v6
+
+    - name: Integrate Environment
+      uses: ./.github/actions/setup-poetry
+      with:
+        python-version: ${{ matrix.python-version }}
 
     - name: Configure Python Runtime Environment
       uses: actions/setup-python@v6
@@ -69,12 +76,12 @@ jobs:
         poetry config virtualenvs.in-project true
         poetry install --with test --no-interaction
 
-    - name: Test Snowball Project
+    - name: Execute Snowball Project Tests
       run: |
         source $(poetry env info --path)/bin/activate
         poetry run pytest -vvx
 
-    - name: Coverage Snowball Project
+    - name: Execute Snowball Project Coverage
       run: |
         source $(poetry env info --path)/bin/activate
         poetry run pytest --cov=snowball --cov-branch --cov-report=term-missing
