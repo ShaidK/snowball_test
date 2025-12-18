@@ -1,3 +1,5 @@
+[![Build Snowball Project](https://github.com/ShaidK/Snowball/actions/workflows/build.yml/badge.svg?branch=build)](https://github.com/ShaidK/Snowball/actions/workflows/build.yml)
+
 **INTEGRATION**
 
 The "Snowball" Action is a [Github Action][1] designed to validate a provided
