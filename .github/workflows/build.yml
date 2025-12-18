@@ -50,11 +50,6 @@ jobs:
     - name: Checkout Snowball Project Repository
       uses: actions/checkout@v6
 
-    - name: Integrate Environment
-      uses: ./.github/actions/setup-poetry
-      with:
-        python-version: ${{ matrix.python-version }}
-
     - name: Configure Python Runtime Environment
       uses: actions/setup-python@v6
       with:
