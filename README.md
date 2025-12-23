@@ -4,7 +4,7 @@ The "Snowball" Action is a [Github Action][1] designed to validate a provided
 Semantic Version.
 
 #### LICENSE
-
+ 
 ```text
 MIT License
 
