@@ -1,13 +1,11 @@
-[![Build Snowball Project](https://github.com/ShaidK/Snowball/actions/workflows/build.yml/badge.svg?branch=build)](https://github.com/ShaidK/Snowball/actions/workflows/build.yml)
-
-**INTEGRATION**
+#### INTEGRATION
 
 The "Snowball" Action is a [Github Action][1] designed to validate a provided
 Semantic Version.
 
-**LICENSE**
+#### LICENSE
 
-```
+```text
 MIT License
 
 Copyright (c) 2025 ShaidK
