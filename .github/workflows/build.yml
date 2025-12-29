@@ -36,7 +36,7 @@ on:
         - build
 jobs:
   build:
-    name: Build Project
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: build
@@ -44,7 +44,7 @@ jobs:
           echo "Executing Build"
           sleep 10
   lint: 
-    name: Lint Project
+    name: Lint
     runs-on: ubuntu-latest
     needs: [ build ]
     steps:
@@ -52,10 +52,37 @@ jobs:
         run: |
           echo "Executing Linting"
           sleep 10
-  success_test:
-    name: Successful Test Project
+  lint_toml: 
+    name: Lint TOML
     runs-on: ubuntu-latest
     needs: [ lint ]
+    steps:
+      - name: toml
+        run: |
+          echo "Executing TOML Linting"
+          sleep 10
+  lint_yaml: 
+    name: Lint YAML
+    runs-on: ubuntu-latest
+    needs: [ lint ]
+    steps:
+      - name: yaml
+        run: |
+          echo "Executing YAML Linting"
+          sleep 10
+  test:
+    name: Successful Test Project
+    runs-on: ubuntu-latest
+    needs: [ lint_toml, lint_yaml ]
+    steps:
+      - name: success_test
+        run: |
+          echo "Executing Success Unit Tests"
+          sleep 10
+  success_test:
+    name: Successful Test
+    runs-on: ubuntu-latest
+    needs: [ test ]
     steps:
       - name: success_test
         run: |
@@ -64,7 +91,7 @@ jobs:
   failure_test:
     name: Failure Test Project
     runs-on: ubuntu-latest
-    needs: [ lint ]
+    needs: [ test ]
     steps:
       - name: failure_test
         run: |
