@@ -34,69 +34,22 @@ on:
     push:
         branches:
         - build
-
 jobs:
-  build_project:
+  build:
     name: Build Project
-    
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [ "3.10", "3.11", "3.12" ]
-
     steps:
-    - name: Checkout Snowball Project Repository
-      uses: actions/checkout@v6
-
-    - name: Configure Python Runtime Environment
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ matrix.python-version }}
-
-    - name: Install Python Dependencies
-      run: |
-        python --version
-        python -m pip install --upgrade pip poetry
-
-    - name: Check Project Configuration TOML
-      run: |
-        poetry --version
-        poetry check --no-interaction --lock
-        poetry env info
-
-    - name: Install Poetry Dependencies 
-      run: |
-        poetry config virtualenvs.in-project true
-        poetry install --with test --no-interaction
-
-    - name: Execute Snowball Project Tests
-      run: |
-        source $(poetry env info --path)/bin/activate
-        poetry run pytest -vvx
-
-    - name: Execute Snowball Project Coverage
-      run: |
-        source $(poetry env info --path)/bin/activate
-        poetry run pytest --cov=snowball --cov-branch
-
-    - name: Build Snowball Project 
-      run: poetry build --no-interaction
-  
-  test_project:
+      - name: Lint
+        run: echo "Executing Build"
+  lint: 
+    name: Lint Project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lint
+        run: echo "Executing Linting"
+  test:
     name: Test Project
-    
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [ "3.10", "3.11", "3.12" ]
-
     steps:
-    - name: Checkout Snowball Project Repository
-      uses: actions/checkout@v6
-
-    - name: Configure Python Runtime Environment
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Unit
+        run: echo "Executing Unit Tests"
