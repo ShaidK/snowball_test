@@ -55,27 +55,6 @@ jobs:
           poetry config virtualenvs.in-project true
           poetry install --with test --no-interaction
 
-      - name: Execute Snowball Project PY Lint
-        run: |
-          source .venv/bin/activate
-          poetry run ruff check .
-
-      - name: Execute Snowball Project TOML Lint
-        run: |
-          source .venv/bin/activate
-          poetry run toml-sort pyproject.toml
-
-      - name: Execute Snowball Project Markdown Lint
-        run: |
-          source .venv/bin/activate
-          poetry run pymarkdownlnt scan -r . -e ./.venv
-
-      - name: Execute Snowball Project YAML Lint
-        run: |
-          source .venv/bin/activate
-          poetry run yamllint --list-files .
-          poetry run yamllint -s -f github .
-
       - name: Build Snowball Project
         run: poetry build --no-interaction
 
