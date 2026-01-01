@@ -1,105 +1,137 @@
-
-#
-# File: build.yml | Note: Following file maintains the Build Pipeline for the Project 
-#
-
-#
-# MIT License
-# 
-# Copyright (c) 2025 ShaidK
-# 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-# 
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-# 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-#
-
 name: Build Snowball Project
 on:
-    pull_request:
-        types: [ opened, synchronize ]
-    push:
-        branches:
-        - build
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+      - build
+
 jobs:
-  build:
-    name: Build
-    uses: shaidk/snowball_test/.github/workflows/ci.yml@84c93e21528aa0de0ea4f38e5092421e497069c1
-  lint: 
-    name: Lint
+  build_project:
+    name: Build Project
     runs-on: ubuntu-latest
-    needs: [ build ]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
     steps:
-      - name: lint
+      - name: Checkout Snowball Project Repository
+        uses: actions/checkout@v4
+
+      - name: Configure Python Runtime Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      # -------------------------------
+      # CACHE: Poetry + Virtualenvs
+      # -------------------------------
+      - name: Cache Poetry Virtualenvs
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pypoetry
+            .venv
+          key: poetry-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-${{ matrix.python-version }}-
+
+      - name: Install Python Dependencies
         run: |
-          echo "Executing Linting"
-          sleep 10
-  lint_toml: 
-    name: Lint TOML
+          python --version
+          python -m pip install --upgrade pip poetry
+
+      - name: Check Project Configuration TOML
+        run: |
+          poetry --version
+          poetry check --no-interaction --lock
+          poetry env info
+
+      - name: Install Poetry Dependencies
+        run: |
+          poetry config virtualenvs.in-project true
+          poetry install --with test --no-interaction
+
+      - name: Execute Snowball Project PY Lint
+        run: |
+          source .venv/bin/activate
+          poetry run ruff check .
+
+      - name: Execute Snowball Project TOML Lint
+        run: |
+          source .venv/bin/activate
+          poetry run toml-sort pyproject.toml
+
+      - name: Execute Snowball Project Markdown Lint
+        run: |
+          source .venv/bin/activate
+          poetry run pymarkdownlnt scan -r . -e ./.venv
+
+      - name: Execute Snowball Project YAML Lint
+        run: |
+          source .venv/bin/activate
+          poetry run yamllint --list-files .
+          poetry run yamllint -s -f github .
+
+      - name: Build Snowball Project
+        run: poetry build --no-interaction
+
+      # Upload build artifacts for test job
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: snowball-dist
+          path: dist/
+
+  # -----------------------------------------
+  # TEST JOB (runs after build)
+  # -----------------------------------------
+  test_project:
+    name: Test Project
     runs-on: ubuntu-latest
-    needs: [ lint ]
+    needs: build_project
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
     steps:
-      - name: toml
+      - name: Checkout Snowball Project Repository
+        uses: actions/checkout@v4
+
+      - name: Configure Python Runtime Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      # Restore Poetry cache + venv
+      - name: Cache Poetry Virtualenvs
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pypoetry
+            .venv
+          key: poetry-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-${{ matrix.python-version }}-
+
+      - name: Install Python Dependencies
         run: |
-          echo "Executing TOML Linting"
-          sleep 10
-  lint_yaml: 
-    name: Lint YAML
-    runs-on: ubuntu-latest
-    needs: [ lint ]
-    steps:
-      - name: yaml
+          python -m pip install --upgrade pip poetry
+          poetry config virtualenvs.in-project true
+          poetry install --with test --no-interaction
+
+      - name: Execute Snowball Project Tests
         run: |
-          echo "Executing YAML Linting"
-          sleep 10
-  test:
-    name: Successful Test Project
-    runs-on: ubuntu-latest
-    needs: [ lint_toml, lint_yaml ]
-    steps:
-      - name: success_test
+          source .venv/bin/activate
+          poetry run pytest -vvx
+
+      - name: Execute Snowball Project Coverage
         run: |
-          echo "Executing Success Unit Tests"
-          sleep 10
-  success_test:
-    name: Successful Test
-    runs-on: ubuntu-latest
-    needs: [ test ]
-    steps:
-      - name: success_test
-        run: |
-          echo "Executing Success Unit Tests"
-          sleep 10
-  failure_test:
-    name: Failure Test Project
-    runs-on: ubuntu-latest
-    needs: [ test ]
-    steps:
-      - name: failure_test
-        run: |
-          echo "Executing Failure Unit Tests"
-          sleep 10
-  coverage:
-    name: Coverage
-    runs-on: ubuntu-latest
-    needs: [ success_test, failure_test ]
-    steps:
-      - name: coverage
-        run: |
-          echo "Executing Failure Unit Tests"
-          sleep 10
-    
-        
+          source .venv/bin/activate
+          poetry run pytest --cov=snowball --cov-branch
