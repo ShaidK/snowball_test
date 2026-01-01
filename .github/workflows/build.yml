@@ -37,12 +37,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: build
-        run: |
-          echo "Executing Build"
-          sleep 10
+    uses: shaidk/snowball_test/.github/workflows/ci.yml
   lint: 
     name: Lint
     runs-on: ubuntu-latest
