@@ -59,11 +59,11 @@ jobs:
         run: poetry build --no-interaction
 
       # Upload build artifacts for test job
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: snowball-dist
-          path: dist/
+      #- name: Upload Build Artifacts
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: snowball-dist
+      #    path: dist/
 
   # -----------------------------------------
   # TEST JOB (runs after build)
