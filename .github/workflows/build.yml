@@ -37,7 +37,7 @@ on:
 jobs:
   build:
     name: Build
-    uses: shaidk/snowball_test/.github/workflows/ci.yml
+    uses: shaidk/snowball_test/.github/workflows/ci.yml@84c93e21528aa0de0ea4f38e5092421e497069c1
   lint: 
     name: Lint
     runs-on: ubuntu-latest
