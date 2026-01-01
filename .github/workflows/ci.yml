@@ -1,0 +1,11 @@
+name: Build Snowball Workflow
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Snowball Project Repository
+      uses: actions/checkout@v6
