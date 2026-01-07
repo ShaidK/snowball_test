@@ -31,5 +31,5 @@ jobs:
         uses: docker/build-push-action@v6.18.0
         with:
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest"
+          tags: ghcr.io/shaidk/snowball_test:latest"
           
