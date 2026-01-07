@@ -7,7 +7,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
-job:
+jobs:
   publish:
     name: Publish Docker
     runs-on: ubuntu-linux
@@ -21,20 +21,9 @@ job:
         uses: actions/checkout@v6
 
       - name: Docker Login
-  # You may pin to the exact commit or the version.
-  # uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef
-  uses: docker/login-action@v3.6.0
-  with:
-    # Server address of Docker registry. If not set then will default to Docker Hub
-    registry: # optional
-    # Username used to log against the Docker registry
-    username: # optional
-    # Password or personal access token used to log against the Docker registry
-    password: # optional
-    # Specifies whether the given registry is ECR (auto, true or false)
-    ecr: # optional
-    # Log out from the Docker registry at the end of a job
-    logout: # optional, default is true
-    # Raw authentication to registries, defined as YAML objects
-    registry-auth: # optional
+        uses: docker/login-action@v3.6.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_CONTAINER_TOKEN }}
           
