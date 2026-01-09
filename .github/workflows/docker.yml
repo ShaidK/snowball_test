@@ -82,4 +82,4 @@ jobs:
             push: false
             load: true
             context: .
-            tags: ${{ env.REGISTRY }}/${{ steps.tag.outputs..IMAGE_NAME }}:${{ steps.tag.outputs..VERSION }}
+            tags: ${{ env.REGISTRY }}/${{ steps.tag.outputs.IMAGE_NAME }}:${{ steps.tag.outputs.VERSION }}
