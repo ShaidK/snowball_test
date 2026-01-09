@@ -27,9 +27,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Integrate Docker Tags Naming
+        run: | 
+          echo "ACTOR=${GITHUB_ACTOR,,}" >> $GITHUB_ENV 
+          echo "REPOSITORY=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+      - name: Echo
+        run: |
+          echo "$ACTOR"
+          echo "$REPOSITORY"
+          echo "$REGISTRY"
+
       - name: Build and Publish Docker Image
         uses: docker/build-push-action@v6.18.0
         with:
           push: false
-          tags: ghcr.io/shaidk/${{ toLower(github.repository) }}:latest
+          load: true
+          tags: ${{ env.REGISTRY }}/${{ env.ACTOR }}/${{ env.REPOSITORY }}:latest
           
