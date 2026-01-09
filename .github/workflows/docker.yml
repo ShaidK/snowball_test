@@ -49,6 +49,8 @@ jobs:
     steps:
       - name: Checkout Snowball Project Repository
         uses: actions/checkout@v6
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
 
       - name: Docker Login
         uses: docker/login-action@v3.6.0
