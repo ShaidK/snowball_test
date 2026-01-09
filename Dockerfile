@@ -35,6 +35,6 @@ FROM python:3.13-slim
 
 COPY . .
 RUN python -m pip install --no-cache-dir --upgrade pip poetry && \
-    poetry install --without ci --without test
+    poetry install
 
 ENTRYPOINT ["snowball"]
