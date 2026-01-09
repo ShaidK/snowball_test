@@ -30,6 +30,6 @@ jobs:
       - name: Build and Publish Docker Image
         uses: docker/build-push-action@v6.18.0
         with:
-          push: true
-          tags: ghcr.io/shaidk/snowball_test:latest
+          push: false
+          tags: ghcr.io/shaidk/${{ toLower(github.repository) }}:latest
           
