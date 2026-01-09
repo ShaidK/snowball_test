@@ -1,15 +1,45 @@
-name: Publish Docker
+#
+# File: docker.yml | Note: Following file maintains Pipeline to build the Docker Image
+#
+
+#
+# MIT License
+#
+# Copyright (c) 2025 ShaidK
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+---
+
+name: Build Snowball Docker Image
 on:
   push:
-    branches: [ "build" ]
+    branches:
+      - build
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  publish:
-    name: Publish Docker
+  build:
+    name: Build Docker Image
     runs-on: ubuntu-latest
 
     permissions:
@@ -27,21 +57,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Integrate Docker Tags Naming
-        run: | 
-          echo "ACTOR=${GITHUB_ACTOR,,}" >> $GITHUB_ENV 
-          echo "REPOSITORY=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
-
-      - name: Echo
+      - name: Integrate Docker Tag Envirnment Variable
         run: |
-          echo "$ACTOR"
-          echo "$REPOSITORY"
-          echo "$REGISTRY"
+          echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
       - name: Build and Publish Docker Image
         uses: docker/build-push-action@v6.18.0
         with:
-          push: false
-          load: true
-          tags: ${{ env.REGISTRY }}/${{ env.ACTOR }}/${{ env.REPOSITORY }}:latest
-          
+            file: Dockerfile
+            push: false
+            context: .
+            tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
