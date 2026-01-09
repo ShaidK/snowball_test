@@ -61,7 +61,7 @@ jobs:
 
       - name: Integrate Docker Tag Envirnment Variable
         run: |
-          echo "$COMMIT_MESSAGE"
+          echo ${{ env.COMMIT_MESSAGE }}
 
       - name: Integrate Docker Tag Envirnment Variable
         run: |
