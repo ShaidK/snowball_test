@@ -79,7 +79,7 @@ jobs:
         uses: docker/build-push-action@v6.18.0
         with:
             file: Dockerfile
-            push: false
+            push: true
             load: true
             context: .
             tags: ${{ env.REGISTRY }}/${{ steps.tag.outputs.IMAGE_NAME }}:${{ steps.tag.outputs.VERSION }}
