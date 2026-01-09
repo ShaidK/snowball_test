@@ -49,8 +49,6 @@ jobs:
     steps:
       - name: Checkout Snowball Project Repository
         uses: actions/checkout@v6
-        env:
-          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
 
       - name: Docker Login
         uses: docker/login-action@v3.6.0
@@ -60,13 +58,22 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Integrate Docker Tag Envirnment Variable
-        run: |
-          echo ${{ env.COMMIT_MESSAGE }}
+        id: tag
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.setOutput("VERSION", context.payload.head_commit.message.toLowerCase())
+            core.setOutput("IMAGE_NAME", context.repo.repo.toLowerCase())
 
-      - name: Integrate Docker Tag Envirnment Variable
-        run: |
-          echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
-          echo "VERSION=${COMMIT_MESSAGE,,}" >> $GITHUB_ENV
+#
+#      - name: Integrate Docker Tag Envirnment Variable
+#        run: |
+#          echo "COMMIT_MESSAGE=${{ github.event.head_commit.message }}"
+#
+#      - name: Integrate Docker Tag Envirnment Variable
+#        run: |
+#          echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+#          echo "VERSION=${COMMIT_MESSAGE,,}" >> $GITHUB_ENV
 
       - name: Build and Publish Docker Image
         uses: docker/build-push-action@v6.18.0
@@ -75,4 +82,4 @@ jobs:
             push: false
             load: true
             context: .
-            tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+            tags: ${{ env.REGISTRY }}/${{ steps.tag.outputs..IMAGE_NAME }}:${{ steps.tag.outputs..VERSION }}
