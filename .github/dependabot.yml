@@ -34,10 +34,10 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-      time: "19:46"
+      time: "19:50"
     commit-message:
       prefix: "V0.0.0"
-    target-branch: "main" 
+    target-branch: "build" 
     labels: 
       - "FIXME"
     groups:
@@ -49,10 +49,10 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-      time: "19:46"
+      time: "19:50"
     commit-message:
       prefix: "V0.0.0"
-    target-branch: "main" 
+    target-branch: "build" 
     labels: 
       - "FIXME"
     groups:
@@ -64,10 +64,10 @@ updates:
     directory: "/" 
     schedule: 
       interval: "daily"
-      time: "19:46"
+      time: "19:50"
     commit-message:
       prefix: "V0.0.0"
-    target-branch: "main" 
+    target-branch: "build" 
     labels: 
       - "FIXME"
     groups:
