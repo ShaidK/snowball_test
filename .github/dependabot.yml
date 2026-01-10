@@ -34,7 +34,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-      time: "19:40"
+      time: "19:46"
     commit-message:
       prefix: "V0.0.0"
     target-branch: "main" 
@@ -45,11 +45,11 @@ updates:
         patterns:
           - "*"
 
-  - package-ecosystem: "poetry"
+  - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "daily"
-      time: "19:40"
+      time: "19:46"
     commit-message:
       prefix: "V0.0.0"
     target-branch: "main" 
@@ -64,7 +64,7 @@ updates:
     directory: "/" 
     schedule: 
       interval: "daily"
-      time: "19:40"
+      time: "19:46"
     commit-message:
       prefix: "V0.0.0"
     target-branch: "main" 
