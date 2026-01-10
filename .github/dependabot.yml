@@ -34,14 +34,14 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-      time: "19:30"
+      time: "19:40"
     commit-message:
       prefix: "V0.0.0"
     target-branch: "main" 
     labels: 
       - "FIXME"
     groups:
-      actions:
+      docker-actions:
         patterns:
           - "*"
 
@@ -49,14 +49,14 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-      time: "19:30"
+      time: "19:40"
     commit-message:
       prefix: "V0.0.0"
     target-branch: "main" 
     labels: 
       - "FIXME"
     groups:
-      actions:
+      poetry-actions:
         patterns:
           - "*"
 
@@ -64,13 +64,13 @@ updates:
     directory: "/" 
     schedule: 
       interval: "daily"
-      time: "19:30"
+      time: "19:40"
     commit-message:
       prefix: "V0.0.0"
     target-branch: "main" 
     labels: 
       - "FIXME"
     groups:
-      actions:
+      github-actions:
         patterns:
           - "*"
