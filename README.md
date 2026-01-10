@@ -1,5 +1,9 @@
 #### INTEGRATION
 
+![Build](https://img.shields.io/github/actions/workflow/status/shaidk/snowball/build.yml?label=build&labelColor=00B4D4)
+
+![Docker](https://img.shields.io/github/actions/workflow/status/shaidk/snowball/docker.yml?label=docker&labelColor=00B4D4)
+
 ![Python required version](https://img.shields.io/python/required-version-toml?filename=pyproject.toml)
 
 The "Snowball" Action is a [Github Action][1] designed to validate a provided
