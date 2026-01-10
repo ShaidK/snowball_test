@@ -1,5 +1,7 @@
 #### INTEGRATION
 
+![Python required version](https://img.shields.io/python/required-version-toml?filename=pyproject.toml)
+
 The "Snowball" Action is a [Github Action][1] designed to validate a provided
 Semantic Version. It uses AaA.
 
