@@ -1,7 +1,7 @@
 #### INTEGRATION
 
 The "Snowball" Action is a [Github Action][1] designed to validate a provided
-Semantic Version. It uses.
+Semantic Version. It uses A.
 
 #### LICENSE
  
