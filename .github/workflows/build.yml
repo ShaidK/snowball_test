@@ -11,11 +11,6 @@ jobs:
     name: Build Project
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10", "3.11", "3.12"]
-
     steps:
       - name: Checkout Snowball Project Repository
         uses: actions/checkout@v4
@@ -23,7 +18,7 @@ jobs:
       - name: Configure Python Runtime Environment
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.12
           cache: "pip"
 
       # -------------------------------
@@ -35,9 +30,9 @@ jobs:
           path: |
             ~/.cache/pypoetry
             .venv
-          key: poetry-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+          key: poetry-${{ runner.os }}-3.12-${{ hashFiles('poetry.lock') }}
           restore-keys: |
-            poetry-${{ runner.os }}-${{ matrix.python-version }}-
+            poetry-${{ runner.os }}-3.12-
 
       - name: Install Python Dependencies
         run: |
@@ -68,15 +63,10 @@ jobs:
   # -----------------------------------------
   # TEST JOB (runs after build)
   # -----------------------------------------
-  test_project:
-    name: Test Project
+  success_test:
+    name: Execute Snowball Successful Test
     runs-on: ubuntu-latest
     needs: build_project
-
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10", "3.11", "3.12"]
 
     steps:
       - name: Checkout Snowball Project Repository
@@ -85,7 +75,7 @@ jobs:
       - name: Configure Python Runtime Environment
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.12
           cache: "pip"
 
       # Restore Poetry cache + venv
@@ -95,9 +85,9 @@ jobs:
           path: |
             ~/.cache/pypoetry
             .venv
-          key: poetry-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+          key: poetry-${{ runner.os }}-3.12-${{ hashFiles('poetry.lock') }}
           restore-keys: |
-            poetry-${{ runner.os }}-${{ matrix.python-version }}-
+            poetry-${{ runner.os }}-3.12-
 
       - name: Install Python Dependencies
         run: |
@@ -108,17 +98,12 @@ jobs:
       - name: Execute Snowball Project Tests
         run: |
           source .venv/bin/activate
-          poetry run pytest -vvx
+          poetry run pytest -vvx -m success
 
-  coverage:
-    name: Execute Snowball Test Coverages
+  failure_test:
+    name: Execute Snowball Failure Test
     runs-on: ubuntu-latest
-    needs: test_project
-
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10", "3.11", "3.12"]
+    needs: build_project
 
     steps:
       - name: Checkout Snowball Project Repository
@@ -127,7 +112,7 @@ jobs:
       - name: Configure Python Runtime Environment
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.12
           cache: "pip"
 
       # Restore Poetry cache + venv
@@ -137,9 +122,46 @@ jobs:
           path: |
             ~/.cache/pypoetry
             .venv
-          key: poetry-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+          key: poetry-${{ runner.os }}-3.12-${{ hashFiles('poetry.lock') }}
           restore-keys: |
-            poetry-${{ runner.os }}-${{ matrix.python-version }}-
+            poetry-${{ runner.os }}-3.12-
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip poetry
+          poetry config virtualenvs.in-project true
+          poetry install --with test --no-interaction
+
+      - name: Execute Snowball Project Tests
+        run: |
+          source .venv/bin/activate
+          poetry run pytest -vvx -m failure
+
+  coverage:
+    name: Execute Snowball Test Coverages
+    runs-on: ubuntu-latest
+    needs: [ success_test, failure_test ]
+
+    steps:
+      - name: Checkout Snowball Project Repository
+        uses: actions/checkout@v4
+
+      - name: Configure Python Runtime Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      # Restore Poetry cache + venv
+      - name: Cache Poetry Virtualenvs
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pypoetry
+            .venv
+          key: poetry-${{ runner.os }}-3.12-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-3.12-
 
       - name: Install Python Dependencies
         run: |
