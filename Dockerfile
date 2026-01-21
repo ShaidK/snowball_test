@@ -31,7 +31,7 @@
 #
 # NOTE: Docker Multistage Build - Build Stage
 #
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 COPY . .
 RUN python -m pip install --no-cache-dir --upgrade pip poetry && \
